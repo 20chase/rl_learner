@@ -4,7 +4,8 @@ import tensorlayer as tl
 
 
 class ActorCritic(object):
-    def __init__(self, session, env):
+    def __init__(self, model_name, session):
+        self.model_name = model_name
         self.sess = session
     
         # env param
@@ -71,8 +72,8 @@ class ActorCritic(object):
         feed_dict = {self.obs_ph: obs}
         return self.sess.run(self.value, feed_dict)
 
-    def get_action(self, obs, train=False):
-        if train == 0:
+    def get_action(self, obs, train=True):
+        if train:
             action = self.sample(obs)
         else:
             action = self.determine(obs)
