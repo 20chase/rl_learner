@@ -37,12 +37,12 @@ class PPORunner(object):
     def _run_policy(self):
         trajectories = []
         for e in range(self.batch_size):
-            obs, acts, rews = run_episode(self.env, self.agent)
+            obs, acts, rews = self._run_episode()
             acts = np.reshape(acts, (len(rews), self.agent.act_dim))
             trajectory = {
             'obs': obs,
             'acts': acts,
-            'rewards': rewards
+            'rewards': rews
             }
             trajectories.append(trajectory)
 
@@ -67,8 +67,8 @@ class PPORunner(object):
         self._add_gae()
         return self._build_train_set()
 
-    def discount(self, x):
-        return scipy.signal.lfilter([1.0], [1.0, -self.gamma], x[::-1])[::-1]
+    def discount(self, x, gamma):
+        return scipy.signal.lfilter([1.0], [1.0, -gamma], x[::-1])[::-1]
 
     def _add_disc_sum_rew(self):
         for trajectory in self.trajectories:
